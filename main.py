@@ -5,12 +5,16 @@ from ultralytics import YOLO
 
 from Email_Varification import *
 
-# Load a pretrained YOLOv8n model
+# Load a trained YOLOv8n model
 yolo_model = YOLO('model/epoch 100/best_e100.pt')
 
 # Load the video
 video_path = 'videos/Ayush.mp4'
-cap = cv2.VideoCapture(video_path)
+
+# Initializes a VideoWriter object to create an output video
+capture = cv2.VideoCapture(video_path)
+
+# Font
 font = ImageFont.truetype("arial.ttf", 40)
 
 # Initialize the count of empty shelves
@@ -18,10 +22,10 @@ empty_shelf_count = 0
 
 # Define the codec and create VideoWriter object
 fourcc = cv2.VideoWriter_fourcc(*'XVID')
-out = cv2.VideoWriter('output/3eded.mp4', fourcc, 20.0, (int(cap.get(3)), int(cap.get(4))))
+out = cv2.VideoWriter('output/Ayush.mp4', fourcc, 20.0, (int(capture.get(3)), int(capture.get(4))))
 
-while cap.isOpened():
-    ret, frame = cap.read()
+while capture.isOpened():
+    ret, frame = capture.read()
     if not ret:
         break
 
@@ -54,7 +58,7 @@ while cap.isOpened():
     # Display the count of empty spaces in the background box
     draw.text((box_x1 + 10, box_y1 + 10), f"Empty Spaces: {frame_boxes}", fill="white", font=font)
     # Display the percentage of empty spaces in the background box below the count
-    draw.text((box_x1 + 10, box_y1 + 50), f"Available Product[%]: {available_percentage:.2f}%", fill="white", font=font)
+    draw.text((box_x1 + 10, box_y1 + 50), f"Available Product: {available_percentage:.2f}%", fill="white", font=font)
 
     # Convert PIL image back to OpenCV format
     frame_with_boxes = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
@@ -98,6 +102,6 @@ while cap.isOpened():
         break
 
 # Release everything if the job is finished
-cap.release()
+capture.release()
 out.release()
 cv2.destroyAllWindows()
